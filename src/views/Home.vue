@@ -35,7 +35,8 @@
                 Compressed:
                 {{
                   compressedFileSize | friendlyBytes
-                }}&nbsp;MB<br />Compression: {{ compressionPercentage }} %
+                }}&nbsp;MB<br />Compression ratio (original / compressed):
+                {{ compressionRatio }}
                 <br />
               </div>
             </div>
@@ -95,10 +96,9 @@ export default {
         console.log(imageFile);
         this.compressedFileSize = compressedFile.size;
         this.displayCompressedFile(compressedFile);
-        this.compressionPercentage = (
-          (compressedFile.size / imageFile.size) *
-          100
-        ).toFixed(2);
+        this.compressionRatio = (imageFile.size / compressedFile.size).toFixed(
+          2
+        );
       } catch (error) {
         this.isCompressing = false;
         console.log(error);
