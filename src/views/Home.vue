@@ -54,7 +54,7 @@ export default {
   components: {},
   mounted() {
     this.options = {
-      maxSizeMB: 1.5,
+      maxSizeMB: 1,
       useWebWorker: true,
       maxIteration: 20
     };
