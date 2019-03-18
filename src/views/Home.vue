@@ -24,7 +24,7 @@
                 color="blue-grey"
                 class="white--text"
                 :href="compressedFile"
-                download="filename.jpg"
+                :download="newFilename"
               >
                 Download
                 <v-icon right dark>cloud_download</v-icon>
@@ -37,7 +37,10 @@
                   compressedFileSize | friendlyBytes
                 }}&nbsp;MB<br />Compression ratio (original / compressed):
                 {{ compressionRatio }}
-                <br />
+                <br /><br />
+
+                <span style="font-weight: bold">{{ newFilename }}</span>
+                <br /><br />
               </div>
             </div>
           </div>
@@ -73,7 +76,9 @@ export default {
       compressedFileName: null,
       compressionPercentage: null,
       compressedFileWidth: null,
-      compressedFileHeight: null
+      compressedFileHeight: null,
+      filenameSuffix: "-min",
+      newFilename: ""
     };
   },
   filters: {
@@ -83,17 +88,33 @@ export default {
     }
   },
   methods: {
+    slugify(text) {
+      return text
+        .toString()
+        .toLowerCase()
+        .replace(/\s+/g, "-") // Replace spaces with -
+
+        .replace(/\-\-+/g, "-") // Replace multiple - with single -
+        .replace(/^-+/, "") // Trim - from start of text
+        .replace(/-+$/, ""); // Trim - from end of text
+    },
     async handleImageUpload(event) {
       this.isReadyToDisplay = false;
       this.isCompressing = true;
 
       const imageFile = event.target.files[0];
+      //console.log(imageFile);
+      let filenameInfo = imageFile.name.split(".");
+      let newFilename =
+        filenameInfo[0] + this.filenameSuffix + "." + filenameInfo[1];
 
+      this.newFilename = this.slugify(newFilename);
+      //console.log(this.newFilename);
       this.originalFileSize = imageFile.size;
       try {
         const compressedFile = await imageCompression(imageFile, this.options);
         this.isCompressing = false;
-        console.log(imageFile);
+        //console.log(imageFile);
         this.compressedFileSize = compressedFile.size;
         this.displayCompressedFile(compressedFile);
         this.compressionRatio = (imageFile.size / compressedFile.size).toFixed(
@@ -111,9 +132,6 @@ export default {
       blobToBase64(file, function(error, base64) {
         if (!error) {
           vm.compressedFile = base64;
-          // let img = document.getElementById("image");
-          // vm.compressedFileWidth = img.clientWidth;
-          // vm.compressedFileHeight = img.clientHeight;
         }
       });
     }
