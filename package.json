@@ -9,7 +9,7 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "blob-to-base64": "^1.0.1",
     "browser-image-compression": "^1.0.0",
     "image-to-base64": "^2.0.1",
